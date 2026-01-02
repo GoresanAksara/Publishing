@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Quill JS (Rich Text Editor) -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <style>
         /* --- GLOBAL STYLES --- */
@@ -44,15 +46,19 @@
         .navbar {
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             background-color: #fff;
-            padding: 15px 0;
+            padding: 10px 0;
             z-index: 1030;
         }
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            background: linear-gradient(135deg, var(--tosca-pastel) 0%, var(--mustard-pastel) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            color: var(--navy-dark) !important;
+        }
+        .navbar-brand img {
+            max-height: 50px;
+            margin-right: 10px;
         }
         .nav-link { color: #555 !important; font-weight: 500; margin: 0 5px; cursor: pointer;}
         .nav-link:hover { color: var(--tosca-pastel) !important; }
@@ -70,47 +76,105 @@
             color: white; border-color: transparent;
         }
 
-        /* --- HERO SECTION --- */
-        .hero-section {
+        /* --- SECTIONS --- */
+        section { min-height: 100vh; }
+        
+        /* Hero Visual */
+        .hero-visual {
             background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
             background-size: cover;
             background-position: center;
-            height: 100vh;
+            height: 100vh; 
             display: flex;
             align-items: center;
             color: white;
             text-align: center;
-            margin-top: -76px; padding-top: 76px;
+            margin-top: -76px; 
+            padding-top: 76px; 
         }
+        
+        /* Admin Hero */
+        .admin-dashboard-view {
+            padding-top: 100px;
+            padding-bottom: 50px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
         .hero-title {
             font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem;
             background: linear-gradient(135deg, #81ecec 0%, #ffeaa7 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* --- BANNER CAROUSEL (16:9) --- */
+        /* --- PROMO & QUICK MENU --- */
+        .promo-section { padding: 60px 0; background-color: #fff; }
         .banner-container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-            aspect-ratio: 16/9;
-            background-color: #eee;
-            border-radius: 15px;
-            overflow: hidden;
+            width: 100%; max-width: 1000px; margin: 0 auto;
+            aspect-ratio: 16/9; background-color: #eee;
+            border-radius: 15px; overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .carousel-item img {
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .quick-menu-btn {
+            border: 2px solid #eee;
+            border-radius: 15px;
+            padding: 15px;
+            background: white;
+            transition: 0.3s;
+            color: var(--navy-dark);
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            height: 100%;
+        }
+        .quick-menu-btn:hover {
+            border-color: var(--tosca-pastel);
+            background: #f0fffe;
+            transform: translateY(-5px);
+            color: var(--tosca-pastel);
+        }
+        .quick-menu-btn i { font-size: 1.5rem; margin-bottom: 5px; }
+
+        /* --- TEAM SECTION --- */
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            height: 100%;
+            transition: 0.3s;
+            border: 1px solid #eee;
+        }
+        .team-card:hover { transform: translateY(-5px); border-color: var(--tosca-pastel); }
+        .team-img-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px auto;
+            border: 4px solid var(--mustard-pastel);
+            padding: 2px;
+            background: white;
+        }
+        .team-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 50%;
         }
+        .team-name { font-weight: 700; color: var(--navy-dark); margin-bottom: 5px; }
+        .team-role { font-size: 0.9rem; color: #777; font-weight: 500; }
 
         /* --- PRICING CARD --- */
         .pricing-card {
-            border: none; border-radius: 20px;
-            background: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: 0.3s; height: 100%; position: relative; overflow: hidden;
+            border: none; border-radius: 20px; background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s;
+            height: 100%; position: relative; overflow: hidden;
         }
         .pricing-card:hover { transform: translateY(-5px); }
         .pricing-header { padding: 30px 20px; background: #f8f9fa; border-bottom: 1px solid #eee; }
@@ -120,12 +184,8 @@
 
         /* --- ADMIN PANEL --- */
         .admin-panel {
-            border: 2px dashed var(--tosca-pastel);
-            background-color: #f0fffe;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            position: relative;
+            border: 2px dashed var(--tosca-pastel); background-color: #f0fffe;
+            padding: 20px; border-radius: 15px; margin-bottom: 30px; position: relative;
         }
         .admin-label {
             position: absolute; top: -15px; left: 20px;
@@ -133,15 +193,11 @@
             padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
         }
 
-        /* --- ARCHIVE TABLE --- */
-        .table-archive th { background-color: var(--navy-dark); color: white; }
-        
-        /* Status Badges */
-        .status-baru { background-color: #3498db; color: white; }
-        .status-diproses { background-color: #f1c40f; color: black; }
-        .status-diterima { background-color: #2ecc71; color: white; }
-        .status-ditolak { background-color: #e74c3c; color: white; }
-        .status-selesai { background-color: #9b59b6; color: white; }
+        /* --- ARTICLE & RULES CONTENT --- */
+        .ql-editor { min-height: 200px; background: white; }
+        .article-card { cursor: pointer; transition: 0.3s; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .article-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .article-content img { max-width: 100%; height: auto; border-radius: 10px; }
 
         /* --- LOCKED CONTENT --- */
         .locked-content { filter: blur(5px); pointer-events: none; opacity: 0.6; }
@@ -152,8 +208,26 @@
             width: 80%; max-width: 400px;
         }
 
-        /* --- FOOTER --- */
+        /* --- AUTH INPUT GROUP --- */
+        .input-group-text { background: white; border-left: 0; cursor: pointer; border-top-right-radius: 50px !important; border-bottom-right-radius: 50px !important; }
+        .password-field { border-right: 0; border-top-left-radius: 50px !important; border-bottom-left-radius: 50px !important; }
+
+        /* --- BACK BUTTON --- */
+        .back-btn-container { margin-top: 90px; margin-bottom: 20px; }
+
         footer { background-color: var(--navy-dark); color: white; padding: 50px 0 20px 0; }
+        
+        /* Hide sections logic */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        
+        /* Archive Table Status */
+        .status-baru { background-color: #3498db; color: white; }
+        .status-diproses { background-color: #f1c40f; color: black; }
+        .status-diterima { background-color: #2ecc71; color: white; }
+        .status-ditolak { background-color: #e74c3c; color: white; }
+        .status-selesai { background-color: #9b59b6; color: white; }
+
     </style>
 </head>
 <body>
@@ -161,23 +235,26 @@
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">📚 Goresan Aksara</a>
+            <a class="navbar-brand" href="#" onclick="showSection('home')">
+                <img src="https://i.imgur.com/Rq5fZ2r.png" alt="Logo">
+                <span class="gradient-text">Goresan Aksara</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link nav-closer" href="#banner-section">Promo</a></li>
-                    <li class="nav-item"><a class="nav-link nav-closer" href="#layanan">Paket</a></li>
+                    <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('home')">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('artikel')">Keunggulan</a></li>
+                    <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('terbit-gratis')">Terbit Gratis</a></li>
+                    <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('layanan')">Paket Berbayar</a></li>
                     
-                    <!-- USER STATUS LINK (Hidden by default) -->
                     <li class="nav-item d-none" id="nav-status-container">
                         <a class="nav-link nav-closer fw-bold text-primary" href="#" onclick="openStatusModal()">
                             <i class="bi bi-clock-history"></i> Cek Naskah
                         </a>
                     </li>
                     
-                    <!-- AUTH BUTTONS -->
                     <li class="nav-item ms-lg-3" id="nav-auth-container">
                         <button class="btn btn-auth nav-closer" data-bs-toggle="modal" data-bs-target="#authModal">
                             <i class="bi bi-person-circle me-1"></i> Masuk
@@ -198,97 +275,274 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION (User Only) -->
-    <section id="hero-section" class="hero-section">
-        <div class="container">
-            <div class="col-lg-8 mx-auto">
-                <h1 class="hero-title">Abadikan Karyamu dalam Buku</h1>
-                <p class="fs-5 text-light mb-4 opacity-75">
-                    Platform penerbitan modern. Login untuk melihat paket eksklusif dan mengirim naskahmu hari ini.
-                </p>
-                <a href="#layanan" class="btn btn-lg fw-bold rounded-pill px-5 py-3" style="background: white; color: var(--navy-dark);">
-                    Lihat Paket
-                </a>
+    <!-- SECTION: HOME -->
+    <section id="section-home" class="page-section active" style="padding-top: 0;">
+        
+        <!-- USER VIEW: HERO VISUAL -->
+        <div id="hero-visual-user" class="hero-visual">
+            <div class="container">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="hero-title">Abadikan Karyamu dalam Buku</h1>
+                    <p class="fs-5 text-light mb-4 opacity-75">
+                        Platform penerbitan modern. Lihat paket eksklusif, baca artikel, atau coba terbit gratis melalui kurasi.
+                    </p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button onclick="showSection('layanan')" class="btn btn-lg fw-bold rounded-pill px-4 py-3" style="background: white; color: var(--navy-dark);">
+                            Lihat Paket
+                        </button>
+                        <button onclick="showSection('terbit-gratis')" class="btn btn-lg fw-bold rounded-pill px-4 py-3 btn-outline-light">
+                            Terbit Gratis
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- USER VIEW: PROMO & QUICK MENU -->
+        <div id="promo-section-user" class="promo-section">
+            <div class="container">
+                <div class="text-center mb-4">
+                    <h6 class="fw-bold text-uppercase" style="color: var(--mustard-pastel);">Info Terbaru</h6>
+                    <h3 class="fw-bold gradient-text">Promo & Pengumuman</h3>
+                </div>
+                
+                <!-- Carousel -->
+                <div id="promoCarousel" class="carousel slide banner-container mb-5" data-bs-ride="carousel">
+                    <div class="carousel-inner" id="carousel-items">
+                        <div class="carousel-item active">
+                            <img src="https://via.placeholder.com/1600x900?text=Selamat+Datang+di+Goresan+Aksara" class="d-block w-100" alt="Default Banner">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                </div>
+
+                <!-- QUICK NAVIGATION BUTTONS -->
+                <div class="row g-3 justify-content-center">
+                    <div class="col-6 col-md-3">
+                        <a href="#" onclick="showSection('artikel')" class="quick-menu-btn">
+                            <i class="bi bi-newspaper"></i>
+                            <span>Artikel</span>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="#" onclick="showSection('terbit-gratis')" class="quick-menu-btn">
+                            <i class="bi bi-gift-fill"></i>
+                            <span>Terbit Gratis</span>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="#" onclick="showSection('layanan')" class="quick-menu-btn">
+                            <i class="bi bi-box-seam-fill"></i>
+                            <span>Paket Berbayar</span>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="#" onclick="openStatusModal()" class="quick-menu-btn">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Cek Naskah</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEAM SECTION (USER VIEW) -->
+        <div id="team-section-user" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h6 class="fw-bold text-uppercase" style="color: var(--mustard-pastel);">Tim Kami</h6>
+                    <h2 class="fw-bold gradient-text">Kenalan dengan Kami</h2>
+                </div>
+                <div id="team-list-user" class="row g-4 justify-content-center">
+                    <!-- Team members injected here -->
+                    <div class="col-12 text-center text-muted">Memuat data tim...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW: DASHBOARD -->
+        <div id="admin-dashboard-view" class="admin-dashboard-view d-none">
+            <div class="container">
+                <h2 class="fw-bold gradient-text mb-4">Dashboard Admin</h2>
+                
+                <!-- ADMIN BANNER MANAGER -->
+                <div id="admin-banner-panel" class="admin-panel mt-4 text-start">
+                    <span class="admin-label">Admin: Kelola Banner Promo</span>
+                    <form id="formAddBanner" class="row g-2 align-items-center mt-2">
+                        <div class="col-md-8">
+                            <input type="text" id="bannerImgUrl" class="form-control" placeholder="Link Gambar (Imgur/Direct Link)" required>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success w-100">Tambah Banner</button>
+                        </div>
+                    </form>
+                    <div id="admin-banner-list" class="mt-3 row g-2"></div>
+                </div>
+
+                <!-- ADMIN TEAM MANAGER -->
+                <div id="admin-team-panel" class="admin-panel mt-4 text-start">
+                    <span class="admin-label">Admin: Kelola Tim</span>
+                    <form id="formAddTeam" class="row g-2 mt-2">
+                        <div class="col-md-4">
+                            <input type="text" id="teamName" class="form-control" placeholder="Nama Lengkap" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="teamRole" class="form-control" placeholder="Jabatan" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="teamImg" class="form-control" placeholder="Link Foto (Imgur)" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Tambah</button>
+                        </div>
+                    </form>
+                    <div id="admin-team-list" class="mt-3 row g-2"></div>
+                </div>
+            </div>
+        </div>
+
     </section>
 
-    <!-- BANNER PROMO SECTION (Admin: Edit, User: View) -->
-    <section id="banner-section" class="py-5" style="margin-top: 60px;">
+    <!-- SECTION: ARTIKEL (KEUNGGULAN) -->
+    <section id="section-artikel" class="page-section bg-light">
+        <div class="container back-btn-container">
+            <button onclick="showSection('home')" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="bi bi-arrow-left me-2"></i> Kembali ke Beranda
+            </button>
+        </div>
         <div class="container">
-            
-            <!-- ADMIN BANNER MANAGER -->
-            <div id="admin-banner-panel" class="admin-panel d-none">
-                <span class="admin-label">Admin: Kelola Banner (16:9)</span>
-                <form id="formAddBanner" class="row g-2 align-items-center mt-2">
-                    <div class="col-md-8">
-                        <input type="text" id="bannerImgUrl" class="form-control" placeholder="Link Gambar (Imgur/Direct Link)" required>
+            <div class="text-center mb-5">
+                <h6 class="fw-bold text-uppercase" style="color: var(--mustard-pastel);">Informasi & Edukasi</h6>
+                <h2 class="fw-bold gradient-text">Artikel Keunggulan</h2>
+            </div>
+
+            <!-- ADMIN ARTICLE EDITOR -->
+            <div id="admin-article-panel" class="admin-panel d-none">
+                <span class="admin-label">Admin: Tulis Artikel Baru</span>
+                <form id="formArticle">
+                    <input type="hidden" id="editArticleId">
+                    <div class="mb-3">
+                        <label class="fw-bold">Judul Artikel</label>
+                        <input type="text" id="articleTitle" class="form-control" required>
                     </div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-success w-100"><i class="bi bi-plus-circle"></i> Tambah Banner</button>
+                    <div class="mb-3 bg-white">
+                        <label class="fw-bold">Konten Artikel</label>
+                        <div id="editor-artikel"></div> <!-- Quill Editor Container -->
+                    </div>
+                    <div class="text-end">
+                        <button type="button" id="btnCancelArt" class="btn btn-secondary d-none me-2">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Artikel</button>
                     </div>
                 </form>
-                <div id="admin-banner-list" class="mt-3 row g-2">
-                    <!-- Banner items for deletion will appear here -->
-                </div>
             </div>
 
-            <!-- PUBLIC CAROUSEL -->
-            <div id="promoCarousel" class="carousel slide banner-container" data-bs-ride="carousel">
-                <div class="carousel-inner" id="carousel-items">
-                    <!-- Carousel Items Injected Here -->
-                    <div class="carousel-item active">
-                        <img src="https://via.placeholder.com/1600x900?text=Selamat+Datang+di+Goresan+Aksara" class="d-block w-100" alt="Default Banner">
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
+            <!-- ARTICLE LIST VIEW -->
+            <div id="article-list-view" class="row g-4">
+                <div class="text-center"><div class="spinner-border text-info"></div></div>
             </div>
 
+            <!-- ARTICLE DETAIL VIEW -->
+            <div id="article-detail-view" class="d-none">
+                <button onclick="closeArticleDetail()" class="btn btn-outline-secondary rounded-pill mb-4"><i class="bi bi-arrow-left"></i> Kembali ke Daftar</button>
+                <div class="card border-0 shadow-sm p-4">
+                    <h1 id="detail-art-title" class="fw-bold mb-3 gradient-text"></h1>
+                    <div class="text-muted small mb-4" id="detail-art-date"></div>
+                    <div id="detail-art-content" class="article-content"></div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- PAKET PENERBITAN -->
-    <section id="layanan" class="py-5 bg-light position-relative">
-        <div class="container py-5">
+    <!-- SECTION: TERBIT GRATIS -->
+    <section id="section-terbit-gratis" class="page-section">
+        <div class="container back-btn-container">
+            <button onclick="showSection('home')" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="bi bi-arrow-left me-2"></i> Kembali ke Beranda
+            </button>
+        </div>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="fw-bold text-uppercase" style="color: var(--mustard-pastel);">Program Kurasi</h6>
+                <h2 class="fw-bold gradient-text">Terbit Gratis</h2>
+            </div>
+
+            <!-- ADMIN RULES EDITOR -->
+            <div id="admin-rules-panel" class="admin-panel d-none">
+                <span class="admin-label">Admin: Edit Aturan Terbit Gratis</span>
+                <div class="bg-white">
+                    <div id="editor-rules"></div> <!-- Quill Editor -->
+                </div>
+                <button onclick="saveRules()" class="btn btn-primary mt-3 w-100">Simpan Aturan</button>
+            </div>
+
+            <!-- RULES DISPLAY -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                        <div class="card-header bg-gradient-main text-white py-3">
+                            <h5 class="mb-0 fw-bold"><i class="bi bi-patch-exclamation-fill me-2"></i>Syarat & Ketentuan</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="rules-content" class="article-content">
+                                <p class="text-center text-muted">Memuat aturan...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-muted mb-3">Sudah membaca dan menyetujui aturan di atas?</p>
+                        <div id="lock-free-submit" class="d-none">
+                            <button class="btn btn-secondary rounded-pill px-5 py-3" disabled>Login untuk Kirim Naskah</button>
+                        </div>
+                        <div id="btn-free-submit-container">
+                             <button onclick="openWizardFree()" class="btn btn-success btn-lg rounded-pill px-5 py-3 shadow fw-bold pulse-anim">
+                                <i class="bi bi-send-fill me-2"></i> Kirim Naskah Kurasi (Gratis)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: LAYANAN (PAKET BERBAYAR) -->
+    <section id="section-layanan" class="page-section bg-light position-relative">
+        <div class="container back-btn-container">
+            <button onclick="showSection('home')" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="bi bi-arrow-left me-2"></i> Kembali ke Beranda
+            </button>
+        </div>
+        <div class="container">
             <div class="text-center mb-5">
                 <h6 class="fw-bold text-uppercase" style="color: var(--mustard-pastel);">Layanan Kami</h6>
-                <h2 class="fw-bold gradient-text">Paket Penerbitan</h2>
+                <h2 class="fw-bold gradient-text">Paket Penerbitan Berbayar</h2>
             </div>
 
             <!-- ADMIN PACKAGE MANAGER -->
             <div id="admin-package-panel" class="admin-panel d-none">
                 <span class="admin-label">Admin: Kelola Paket</span>
                 <form id="formPackage">
-                    <input type="hidden" id="editPackageId"> <!-- Hidden ID for Editing -->
+                    <input type="hidden" id="editPackageId">
                     <div class="row g-3 mt-1">
                         <div class="col-md-4">
-                            <label class="small fw-bold">Nama Paket</label>
-                            <input type="text" id="pkgName" class="form-control" placeholder="Misal: Paket Indie" required>
+                            <input type="text" id="pkgName" class="form-control" placeholder="Nama Paket" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="small fw-bold">Harga (Rp)</label>
-                            <input type="number" id="pkgPrice" class="form-control" placeholder="750000" required>
+                            <input type="number" id="pkgPrice" class="form-control" placeholder="Harga" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="small fw-bold">Badge (Opsional)</label>
-                            <input type="text" id="pkgBadge" class="form-control" placeholder="Best Seller">
+                            <input type="text" id="pkgBadge" class="form-control" placeholder="Badge (Opsional)">
                         </div>
                         <div class="col-md-12">
-                             <label class="small fw-bold">Link Gambar Cover (Imgur)</label>
-                             <input type="text" id="pkgImg" class="form-control" placeholder="https://i.imgur.com/...">
+                             <input type="text" id="pkgImg" class="form-control" placeholder="Link Gambar (Imgur)">
                         </div>
                         <div class="col-12">
-                            <label class="small fw-bold">Fitur (Pisahkan dengan koma)</label>
-                            <textarea id="pkgFeatures" class="form-control" placeholder="ISBN, Layout, Cover Custom, 2 Eksemplar" rows="2" required></textarea>
+                            <textarea id="pkgFeatures" class="form-control" placeholder="Fitur (Pisahkan koma)" rows="2" required></textarea>
                         </div>
                         <div class="col-12 text-end">
                             <button type="button" id="btnCancelEdit" class="btn btn-secondary d-none me-2">Batal</button>
-                            <button type="submit" id="btnSavePackage" class="btn btn-primary"><i class="bi bi-save"></i> Simpan Paket</button>
+                            <button type="submit" id="btnSavePackage" class="btn btn-primary">Simpan Paket</button>
                         </div>
                     </div>
                 </form>
@@ -296,32 +550,26 @@
 
             <!-- CONTENT CONTAINER -->
             <div class="position-relative">
-                <!-- Lock Overlay -->
                 <div id="lock-packages" class="lock-overlay">
                     <i class="bi bi-lock-fill fs-1 text-secondary mb-3"></i>
                     <h4>Akses Terbatas</h4>
                     <p class="text-muted">Login untuk melihat detail paket.</p>
-                    <button class="btn btn-auth mt-2 nav-closer" data-bs-toggle="modal" data-bs-target="#authModal">Login Sekarang</button>
+                    <button class="btn btn-auth mt-2" data-bs-toggle="modal" data-bs-target="#authModal">Login Sekarang</button>
                 </div>
-
-                <!-- Real Data Container -->
                 <div id="packages-container" class="row g-4 justify-content-center locked-content">
-                    <div class="col-12 text-center py-5">
-                        <div class="spinner-border text-info" role="status"></div>
-                    </div>
+                    <div class="col-12 text-center py-5"><div class="spinner-border text-info"></div></div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- ADMIN ARCHIVE SECTION (Admin Only) -->
-    <section id="admin-archive-section" class="py-5 d-none">
+    
+    <!-- ADMIN ARCHIVE SECTION (Always visible below if Admin) -->
+    <section id="admin-archive-section" class="py-5 d-none bg-white">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold gradient-text">Arsip Naskah Masuk</h3>
                 <button class="btn btn-outline-dark btn-sm" onclick="window.location.reload()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
             </div>
-            
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-0 table-responsive">
                     <table class="table table-hover table-archive mb-0 text-center align-middle">
@@ -335,9 +583,7 @@
                                 <th>Status & Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="archive-table-body">
-                            <!-- Data injected here -->
-                        </tbody>
+                        <tbody id="archive-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -352,9 +598,9 @@
         </div>
     </footer>
 
-    <!-- MODALS SECTION -->
+    <!-- ================= MODALS ================= -->
 
-    <!-- 1. AUTH MODAL -->
+    <!-- AUTH MODAL -->
     <div class="modal fade" id="authModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-4 border-0">
@@ -364,26 +610,31 @@
                 </div>
                 <div class="modal-body p-4">
                     <ul class="nav nav-pills nav-fill mb-3" role="tablist">
-                        <li class="nav-item">
-                            <button class="nav-link active rounded-pill" data-bs-toggle="pill" data-bs-target="#pills-login">Masuk</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link rounded-pill" data-bs-toggle="pill" data-bs-target="#pills-register">Daftar</button>
-                        </li>
+                        <li class="nav-item"><button class="nav-link active rounded-pill" data-bs-toggle="pill" data-bs-target="#pills-login">Masuk</button></li>
+                        <li class="nav-item"><button class="nav-link rounded-pill" data-bs-toggle="pill" data-bs-target="#pills-register">Daftar</button></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="pills-login">
                             <form id="formLogin">
                                 <input type="email" id="loginEmail" class="form-control rounded-pill mb-3" placeholder="Email" required>
-                                <input type="password" id="loginPass" class="form-control rounded-pill mb-3" placeholder="Password" required>
-                                <button type="submit" class="btn bg-gradient-main w-100 rounded-pill text-white fw-bold">Masuk</button>
+                                <div class="input-group mb-3">
+                                    <input type="password" id="loginPass" class="form-control password-field" placeholder="Password" required>
+                                    <span class="input-group-text rounded-end-pill" onclick="togglePassword('loginPass', this)"><i class="bi bi-eye"></i></span>
+                                </div>
+                                <button type="submit" id="btnLoginSubmit" class="btn bg-gradient-main w-100 rounded-pill text-white fw-bold">Masuk</button>
+                                <div class="text-center mt-3">
+                                    <a href="#" class="small text-decoration-none text-muted" data-bs-toggle="modal" data-bs-target="#forgotModal" data-bs-dismiss="modal">Lupa Password?</a>
+                                </div>
                             </form>
                         </div>
                         <div class="tab-pane fade" id="pills-register">
                             <form id="formRegister">
-                                <input type="email" id="regEmail" class="form-control rounded-pill mb-3" placeholder="Email (Gunakan @ac.id untuk Admin)" required>
-                                <input type="password" id="regPass" class="form-control rounded-pill mb-3" placeholder="Buat Password" required>
-                                <button type="submit" class="btn btn-outline-dark w-100 rounded-pill fw-bold">Daftar Akun Baru</button>
+                                <input type="email" id="regEmail" class="form-control rounded-pill mb-3" placeholder="Email" required>
+                                <div class="input-group mb-3">
+                                    <input type="password" id="regPass" class="form-control password-field" placeholder="Buat Password" required>
+                                    <span class="input-group-text rounded-end-pill" onclick="togglePassword('regPass', this)"><i class="bi bi-eye"></i></span>
+                                </div>
+                                <button type="submit" id="btnRegSubmit" class="btn btn-outline-dark w-100 rounded-pill fw-bold">Daftar Akun Baru</button>
                             </form>
                         </div>
                     </div>
@@ -392,7 +643,26 @@
         </div>
     </div>
 
-    <!-- 2. SUBMISSION WIZARD MODAL (User Flow) -->
+    <!-- FORGOT PASSWORD MODAL -->
+    <div class="modal fade" id="forgotModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 p-3">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">Reset Password</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">Masukkan email akun Anda.</p>
+                    <form id="formForgot">
+                        <input type="email" id="forgotEmail" class="form-control rounded-pill mb-3" placeholder="Email terdaftar" required>
+                        <button type="submit" id="btnForgotSubmit" class="btn btn-dark w-100 rounded-pill btn-sm">Kirim Link</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUBMISSION WIZARD MODAL -->
     <div class="modal fade" id="submissionModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content rounded-4 border-0">
@@ -401,7 +671,6 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <!-- Step 1: Detail Paket -->
                     <div id="step1" class="wizard-step">
                         <div class="text-center mb-4">
                             <img id="wizImg" src="" class="rounded mb-3" style="height: 150px; object-fit: cover;">
@@ -409,16 +678,14 @@
                             <h4 id="wizPkgPrice" class="text-muted">Rp 0</h4>
                         </div>
                         <div class="alert alert-info">
-                            <strong>Fasilitas yang didapat:</strong>
+                            <strong>Fasilitas:</strong>
                             <ul id="wizFeatures" class="mb-0 mt-2 ps-3"></ul>
                         </div>
-                        <p class="text-center mt-4">Apakah Anda yakin ingin memilih paket ini?</p>
                         <div class="text-end">
-                            <button class="btn btn-primary rounded-pill px-4" onclick="nextStep(2)">Lanjut Isi Data <i class="bi bi-arrow-right"></i></button>
+                            <button class="btn btn-primary rounded-pill px-4" onclick="nextStep(2)">Lanjut <i class="bi bi-arrow-right"></i></button>
                         </div>
                     </div>
 
-                    <!-- Step 2: Data Diri -->
                     <div id="step2" class="wizard-step d-none">
                         <h5 class="mb-3 border-bottom pb-2">Data Penulis</h5>
                         <form id="wizForm">
@@ -435,13 +702,12 @@
                                 <input type="tel" id="subWa" class="form-control" placeholder="08..." required>
                             </div>
                             <div class="text-end mt-4">
-                                <button type="button" class="btn btn-secondary rounded-pill me-2" onclick="prevStep(1)">Kembali</button>
+                                <button type="button" id="btnBackToStep1" class="btn btn-secondary rounded-pill me-2" onclick="prevStep(1)">Kembali</button>
                                 <button type="button" class="btn btn-primary rounded-pill px-4" onclick="nextStep(3)">Lanjut <i class="bi bi-arrow-right"></i></button>
                             </div>
                         </form>
                     </div>
 
-                    <!-- Step 3: Ketentuan & Kirim -->
                     <div id="step3" class="wizard-step d-none">
                         <h5 class="mb-3 border-bottom pb-2">Konfirmasi & Kirim</h5>
                         <div class="mb-3 p-3 bg-light rounded border">
@@ -451,15 +717,12 @@
                             </div>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" id="check2">
-                                <label class="form-check-label" for="check2">Saya setuju dengan harga paket.</label>
+                                <label class="form-check-label" for="check2">Saya setuju dengan ketentuan.</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="check3">
                                 <label class="form-check-label" for="check3">Saya siap mengirim file naskah via Email.</label>
                             </div>
-                        </div>
-                        <div class="alert alert-warning small">
-                            <i class="bi bi-info-circle"></i> Setelah klik tombol "Kirim", aplikasi Email Anda akan terbuka. Silakan lampirkan file naskah Anda di email tersebut.
                         </div>
                         <div class="text-end mt-4">
                             <button type="button" class="btn btn-secondary rounded-pill me-2" onclick="prevStep(2)">Kembali</button>
@@ -473,7 +736,7 @@
         </div>
     </div>
 
-    <!-- 3. USER STATUS CHECK MODAL -->
+    <!-- USER STATUS CHECK MODAL -->
     <div class="modal fade" id="statusModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content rounded-4 border-0">
@@ -484,65 +747,31 @@
                 <div class="modal-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-4">Tanggal</th>
-                                    <th>Judul Naskah</th>
-                                    <th>Paket</th>
-                                    <th class="pe-4 text-end">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-status-body">
-                                <!-- User status loaded here -->
-                            </tbody>
+                            <thead class="table-light"><tr><th class="ps-4">Tanggal</th><th>Judul</th><th>Paket</th><th class="pe-4 text-end">Status</th></tr></thead>
+                            <tbody id="user-status-body"></tbody>
                         </table>
                     </div>
-                    <div id="status-empty-msg" class="text-center py-5 d-none">
-                        <i class="bi bi-inbox fs-1 text-muted"></i>
-                        <p class="text-muted mt-2">Belum ada naskah yang dikirim.</p>
-                    </div>
+                    <div id="status-empty-msg" class="text-center py-5 d-none"><p class="text-muted">Belum ada naskah.</p></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 4. CUSTOM ALERT MODAL -->
-    <div class="modal fade" id="alertModal" tabindex="-1">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content text-center p-3 rounded-4">
-                <div class="mb-2" id="alertIcon"></div>
-                <h6 id="alertTitle" class="fw-bold mb-2"></h6>
-                <p id="alertMsg" class="small text-muted mb-3"></p>
-                <button type="button" class="btn btn-dark btn-sm rounded-pill w-100" data-bs-dismiss="modal">Oke</button>
-            </div>
-        </div>
-    </div>
+    <!-- ALERTS & CONFIRM MODALS -->
+    <div class="modal fade" id="alertModal" tabindex="-1"><div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content text-center p-3 rounded-4"><div class="mb-2" id="alertIcon"></div><h6 id="alertTitle" class="fw-bold mb-2"></h6><p id="alertMsg" class="small text-muted mb-3"></p><button type="button" class="btn btn-dark btn-sm rounded-pill w-100" data-bs-dismiss="modal">Oke</button></div></div></div>
+    <div class="modal fade" id="confirmModal" tabindex="-1"><div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content text-center p-3 rounded-4"><i class="bi bi-question-circle-fill fs-1 text-warning mb-2"></i><h6 class="fw-bold mb-2">Konfirmasi</h6><p id="confirmMsg" class="small text-muted mb-3"></p><div class="d-flex gap-2 justify-content-center"><button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Batal</button><button type="button" id="btnConfirmYes" class="btn btn-danger btn-sm rounded-pill px-3">Ya</button></div></div></div></div>
 
-    <!-- 5. CUSTOM CONFIRM MODAL -->
-    <div class="modal fade" id="confirmModal" tabindex="-1">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content text-center p-3 rounded-4">
-                <i class="bi bi-question-circle-fill fs-1 text-warning mb-2"></i>
-                <h6 class="fw-bold mb-2">Konfirmasi</h6>
-                <p id="confirmMsg" class="small text-muted mb-3"></p>
-                <div class="d-flex gap-2 justify-content-center">
-                    <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" id="btnConfirmYes" class="btn btn-danger btn-sm rounded-pill px-3">Ya, Lanjutkan</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- BOOTSTRAP JS -->
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
-    <!-- FIREBASE LOGIC -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        // MENGGUNAKAN VERSI FIREBASE STABIL 10.8.0 AGAR TIDAK ERROR
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDoc, getDocs, deleteDoc, updateDoc, setDoc, doc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyCuhmevYBaj2VvZXEjGFeYe_DY2QmdopHc",
             authDomain: "goresanaksara-1a234.firebaseapp.com",
@@ -556,380 +785,335 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         
-        // --- VARIABLES ---
+        // GLOBAL VARS
         let currentUser = null;
         let isAdmin = false;
         let selectedPackageData = null; 
-        let confirmCallback = null; 
+        let confirmCallback = null;
+        let isFreeSubmission = false;
 
-        // --- HELPER FUNCTIONS ---
+        // INIT QUILL (RICH TEXT EDITOR)
+        const quillArtikel = new Quill('#editor-artikel', {
+            theme: 'snow', placeholder: 'Tulis artikel...',
+            modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'header': 1 }, { 'header': 2 }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], [{ 'align': [] }], ['clean']] }
+        });
+        const quillRules = new Quill('#editor-rules', {
+            theme: 'snow', placeholder: 'Tulis aturan...',
+            modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], [{ 'align': [] }]] }
+        });
+
+        // HELPERS
         window.showAlert = (title, msg, type = 'success') => {
-            const icon = document.getElementById('alertIcon');
-            icon.innerHTML = type === 'success' ? 
-                '<i class="bi bi-check-circle-fill fs-1 text-success"></i>' : 
-                '<i class="bi bi-x-circle-fill fs-1 text-danger"></i>';
-            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertIcon').innerHTML = type === 'success' ? '<i class="bi bi-check-circle-fill fs-1 text-success"></i>' : '<i class="bi bi-x-circle-fill fs-1 text-danger"></i>';
+            document.getElementById('alertTitle').innerText = title; 
             document.getElementById('alertMsg').innerText = msg;
             new bootstrap.Modal(document.getElementById('alertModal')).show();
         };
-
         window.showConfirm = (msg, callback) => {
-            document.getElementById('confirmMsg').innerText = msg;
-            confirmCallback = callback;
+            document.getElementById('confirmMsg').innerText = msg; confirmCallback = callback;
             new bootstrap.Modal(document.getElementById('confirmModal')).show();
         };
+        document.getElementById('btnConfirmYes').addEventListener('click', () => { if (confirmCallback) confirmCallback(); bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide(); });
+        window.togglePassword = (inputId, iconSpan) => { const input = document.getElementById(inputId); const icon = iconSpan.querySelector('i'); if (input.type === "password") { input.type = "text"; icon.classList.replace('bi-eye', 'bi-eye-slash'); } else { input.type = "password"; icon.classList.replace('bi-eye-slash', 'bi-eye'); } };
 
-        document.getElementById('btnConfirmYes').addEventListener('click', () => {
-            if (confirmCallback) confirmCallback();
-            bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
-        });
+        // NAVIGATION LOGIC
+        window.showSection = (sectionId) => {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('section-' + sectionId).classList.add('active');
+            const bsCollapse = bootstrap.Collapse.getInstance(document.getElementById('navbarNav'));
+            if (bsCollapse) bsCollapse.hide();
+            if (sectionId === 'terbit-gratis') loadRules();
+        };
 
-        // NAVBAR AUTO CLOSER
-        document.querySelectorAll('.nav-closer').forEach(item => {
-            item.addEventListener('click', () => {
-                const navbarCollapse = document.getElementById('navbarNav');
-                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
-                if (bsCollapse) {
-                    bsCollapse.hide();
-                }
-            });
-        });
-
-        // --- AUTH LOGIC ---
+        // AUTH & UI STATE LISTENER
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            const heroSection = document.getElementById('hero-section');
-            const adminBannerPanel = document.getElementById('admin-banner-panel');
-            const adminPkgPanel = document.getElementById('admin-package-panel');
+            const adminPanels = document.querySelectorAll('.admin-panel');
             const adminArchive = document.getElementById('admin-archive-section');
-            const lockPackages = document.getElementById('lock-packages');
-            const containerPackages = document.getElementById('packages-container');
-            const navStatus = document.getElementById('nav-status-container');
-
+            const lockOverlays = document.querySelectorAll('.lock-overlay');
+            const lockedContents = document.querySelectorAll('.locked-content');
+            const heroUser = document.getElementById('hero-visual-user');
+            const promoUser = document.getElementById('promo-section-user');
+            const teamUser = document.getElementById('team-section-user');
+            const heroAdmin = document.getElementById('admin-dashboard-view');
+            
             if (user) {
                 // LOGGED IN
                 isAdmin = user.email.endsWith('@ac.id');
                 document.getElementById('nav-auth-container').classList.add('d-none');
                 document.getElementById('nav-user-container').classList.remove('d-none');
                 document.getElementById('user-display-name').innerText = user.email.split('@')[0];
+                document.getElementById('nav-status-container').classList.remove('d-none');
 
-                lockPackages.classList.add('d-none');
-                containerPackages.classList.remove('locked-content');
+                // Unlock
+                lockOverlays.forEach(el => el.classList.add('d-none'));
+                lockedContents.forEach(el => el.classList.remove('locked-content'));
+                document.getElementById('lock-free-submit').classList.add('d-none');
+                document.getElementById('btn-free-submit-container').classList.remove('d-none');
 
                 if (isAdmin) {
-                    // ADMIN
-                    heroSection.classList.add('d-none');
-                    navStatus.classList.add('d-none'); // Admin ga perlu cek status naskah sendiri
-                    adminBannerPanel.classList.remove('d-none');
-                    adminPkgPanel.classList.remove('d-none');
+                    // ADMIN VIEW
+                    adminPanels.forEach(el => el.classList.remove('d-none'));
                     adminArchive.classList.remove('d-none');
+                    document.getElementById('nav-status-container').classList.add('d-none');
+                    
+                    // Admin Special: Hide Hero Visual & Promo, Show Admin Dashboard
+                    heroUser.classList.add('d-none');
+                    promoUser.classList.add('d-none');
+                    teamUser.classList.add('d-none');
+                    heroAdmin.classList.remove('d-none');
+                    
                     loadArchive();
                 } else {
-                    // USER
-                    heroSection.classList.remove('d-none');
-                    navStatus.classList.remove('d-none'); // User bisa cek status
-                    adminBannerPanel.classList.add('d-none');
-                    adminPkgPanel.classList.add('d-none');
+                    // USER VIEW
+                    adminPanels.forEach(el => el.classList.add('d-none'));
                     adminArchive.classList.add('d-none');
+                    
+                    // Restore Hero
+                    heroUser.classList.remove('d-none');
+                    promoUser.classList.remove('d-none');
+                    teamUser.classList.remove('d-none');
+                    heroAdmin.classList.add('d-none');
                 }
             } else {
-                // GUEST
+                // GUEST VIEW
                 isAdmin = false;
                 document.getElementById('nav-auth-container').classList.remove('d-none');
                 document.getElementById('nav-user-container').classList.add('d-none');
-                navStatus.classList.add('d-none');
+                document.getElementById('nav-status-container').classList.add('d-none');
                 
-                heroSection.classList.remove('d-none');
-                adminBannerPanel.classList.add('d-none');
-                adminPkgPanel.classList.add('d-none');
+                adminPanels.forEach(el => el.classList.add('d-none'));
                 adminArchive.classList.add('d-none');
                 
-                lockPackages.classList.remove('d-none');
-                containerPackages.classList.add('locked-content');
+                // Restore Hero
+                heroUser.classList.remove('d-none');
+                promoUser.classList.remove('d-none');
+                teamUser.classList.remove('d-none');
+                heroAdmin.classList.add('d-none');
+
+                // Lock
+                lockOverlays.forEach(el => el.classList.remove('d-none'));
+                lockedContents.forEach(el => el.classList.add('locked-content'));
+                document.getElementById('lock-free-submit').classList.remove('d-none');
+                document.getElementById('btn-free-submit-container').classList.add('d-none');
             }
             renderPackages();
             renderBanners();
+            renderArticles();
+            renderTeams();
         });
 
-        // Auth Forms
-        document.getElementById('formRegister').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPass').value);
-                bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
-                showAlert('Berhasil', 'Akun berhasil dibuat!', 'success');
-            } catch (err) { showAlert('Gagal', err.message, 'error'); }
-        });
-
+        // --- AUTH FORMS ---
         document.getElementById('formLogin').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('btnLoginSubmit');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+            btn.disabled = true;
             try {
                 await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
                 bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
-            } catch (err) { showAlert('Gagal', 'Email atau password salah', 'error'); }
+            } catch(e) { window.showAlert('Gagal', 'Email atau password salah', 'error'); } 
+            finally { btn.innerHTML = originalText; btn.disabled = false; }
         });
 
+        document.getElementById('formRegister').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnRegSubmit');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+            btn.disabled = true;
+            try {
+                await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPass').value);
+                bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+                window.showAlert('Berhasil', 'Akun berhasil dibuat!', 'success');
+            } catch(e) { window.showAlert('Gagal', e.message, 'error'); } 
+            finally { btn.innerHTML = originalText; btn.disabled = false; }
+        });
+
+        document.getElementById('formForgot').addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            try {
+                await sendPasswordResetEmail(auth, document.getElementById('forgotEmail').value);
+                bootstrap.Modal.getInstance(document.getElementById('forgotModal')).hide();
+                window.showAlert('Terkirim', 'Cek email Anda untuk reset password.', 'success');
+            } catch(e) { window.showAlert('Gagal', e.message, 'error'); }
+        });
         document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
-
-        // --- USER: CHECK STATUS NASKAH ---
-        window.openStatusModal = () => {
-            if (!currentUser) return;
-            const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-            modal.show();
-            
-            // Query only current user's manuscripts
-            const q = query(collection(db, "naskah_masuk"), where("userEmail", "==", currentUser.email), orderBy("tanggal", "desc"));
-            
-            onSnapshot(q, (snapshot) => {
-                const tbody = document.getElementById('user-status-body');
-                const emptyMsg = document.getElementById('status-empty-msg');
-                tbody.innerHTML = "";
-
-                if (snapshot.empty) {
-                    emptyMsg.classList.remove('d-none');
-                } else {
-                    emptyMsg.classList.add('d-none');
-                    snapshot.forEach(doc => {
-                        const d = doc.data();
-                        const date = d.tanggal ? new Date(d.tanggal.seconds * 1000).toLocaleDateString('id-ID') : '-';
-                        
-                        let badgeClass = 'bg-secondary';
-                        if (d.status === 'Baru') badgeClass = 'status-baru';
-                        else if (d.status === 'Diproses') badgeClass = 'status-diproses';
-                        else if (d.status === 'Diterima') badgeClass = 'status-diterima';
-                        else if (d.status === 'Ditolak') badgeClass = 'status-ditolak';
-                        else if (d.status === 'Selesai') badgeClass = 'status-selesai';
-
-                        tbody.innerHTML += `
-                            <tr>
-                                <td class="ps-4 text-muted small">${date}</td>
-                                <td class="fw-bold">${d.judul}</td>
-                                <td>${d.paket}</td>
-                                <td class="pe-4 text-end">
-                                    <span class="badge ${badgeClass} rounded-pill px-3">${d.status}</span>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
+        // --- DATA RENDER LOGIC ---
+        function renderBanners(){
+            onSnapshot(query(collection(db,"banners"),orderBy("createdAt","desc")),(s)=>{
+                const c=document.getElementById('carousel-items'); const l=document.getElementById('admin-banner-list');
+                c.innerHTML=""; l.innerHTML="";
+                if(s.empty) c.innerHTML='<div class="carousel-item active"><img src="https://via.placeholder.com/1600x900" class="d-block w-100"></div>';
+                else s.docs.forEach((d,i)=>{
+                    c.innerHTML+=`<div class="carousel-item ${i===0?'active':''}"><img src="${d.data().img}" class="d-block w-100"></div>`;
+                    if(isAdmin) l.innerHTML+=`<div class="col-md-3 position-relative"><img src="${d.data().img}" class="img-thumbnail"><button onclick="window.deleteBanner('${d.id}')" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1">&times;</button></div>`;
+                });
             });
-        };
-
-
-        // --- ADMIN: UPDATE STATUS & ARCHIVE ---
-        window.updateNaskahStatus = async (docId, newStatus) => {
-            try {
-                await updateDoc(doc(db, "naskah_masuk", docId), { status: newStatus });
-            } catch (e) {
-                showAlert('Error', 'Gagal update status: ' + e.message, 'error');
-            }
-        };
-
-        function loadArchive() {
-            onSnapshot(query(collection(db, "naskah_masuk"), orderBy("tanggal", "desc")), (snapshot) => {
-                const tbody = document.getElementById('archive-table-body');
-                tbody.innerHTML = "";
-                if(snapshot.empty) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="text-muted py-3">Belum ada naskah masuk</td></tr>`;
-                    return;
-                }
-                snapshot.forEach(doc => {
-                    const d = doc.data();
-                    const date = d.tanggal ? new Date(d.tanggal.seconds * 1000).toLocaleDateString('id-ID') : '-';
-                    const docId = doc.id;
-                    const status = d.status || 'Baru';
-
-                    // Dropdown for Status Change
-                    const statusOptions = ['Baru', 'Diproses', 'Diterima', 'Ditolak', 'Selesai'];
-                    let selectHtml = `<select class="form-select form-select-sm" onchange="window.updateNaskahStatus('${docId}', this.value)">`;
-                    statusOptions.forEach(opt => {
-                        selectHtml += `<option value="${opt}" ${status === opt ? 'selected' : ''}>${opt}</option>`;
-                    });
-                    selectHtml += `</select>`;
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${date}</td>
-                            <td>${d.namaPenulis}</td>
-                            <td>${d.judul}</td>
-                            <td><span class="badge bg-light text-dark border">${d.paket}</span></td>
-                            <td>
-                                <a href="https://wa.me/${d.wa}" target="_blank" class="btn btn-sm btn-success"><i class="bi bi-whatsapp"></i></a>
-                                <a href="mailto:${d.userEmail}" class="btn btn-sm btn-secondary"><i class="bi bi-envelope"></i></a>
-                            </td>
-                            <td style="width: 150px;">
-                                ${selectHtml}
-                            </td>
-                        </tr>
-                    `;
+        }
+        
+        function renderPackages(){
+            onSnapshot(query(collection(db,"packages"),orderBy("createdAt","desc")),(s)=>{
+                const c=document.getElementById('packages-container'); c.innerHTML="";
+                if(s.empty){ c.innerHTML='<div class="text-center py-5">Belum ada paket</div>'; return; }
+                s.forEach(d=>{
+                    const data=d.data();
+                    let ac=""; if(isAdmin) ac=`<div class="position-absolute top-0 start-0 m-2" style="z-index:99"><button onclick="window.editPackage('${d.id}','${data.name}','${data.price}','${data.badge}','${data.img}','${encodeURIComponent(data.features.join(','))}')" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button><button onclick="window.deletePackage('${d.id}')" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button></div>`;
+                    const fh = data.features.map(f=>`<li><i class="bi bi-check-circle-fill"></i> ${f}</li>`).join('');
+                    c.innerHTML+=`<div class="col-md-6 col-lg-4"><div class="pricing-card h-100">${ac}${data.badge?`<span class="position-absolute top-0 end-0 m-3 badge bg-gradient-main rounded-pill">${data.badge}</span>`:''}<div style="height:180px;overflow:hidden"><img src="${data.img||'https://via.placeholder.com/400'}" style="width:100%;height:100%;object-fit:cover"></div><div class="pricing-header text-center"><h3 class="gradient-text">${data.name}</h3><div class="price-tag my-3">Rp ${parseInt(data.price).toLocaleString('id-ID')}</div></div><div class="card-body p-4"><ul class="list-unstyled feature-list mx-auto mb-4" style="max-width:250px">${fh}</ul><button onclick="window.openWizard('${encodeURIComponent(JSON.stringify(data))}')" class="btn btn-outline-dark w-100 rounded-pill">Pilih Paket</button></div></div></div>`;
                 });
             });
         }
 
+        function renderArticles() {
+            onSnapshot(query(collection(db,"articles"),orderBy("createdAt","desc")),(s)=>{
+                const c=document.getElementById('article-list-view'); c.innerHTML="";
+                if(s.empty) { c.innerHTML='<p class="text-center text-muted">Belum ada artikel.</p>'; return; }
+                s.forEach(doc=>{
+                    const d=doc.data();
+                    const prev=d.content.replace(/<[^>]*>?/gm, '').substring(0,100)+'...';
+                    const date=d.createdAt?new Date(d.createdAt.seconds*1000).toLocaleDateString('id-ID'):'';
+                    let adminBtns=''; if(isAdmin) adminBtns=`<div class="position-absolute top-0 end-0 m-3"><button onclick="window.editArticle('${doc.id}')" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button><button onclick="window.deleteArticle('${doc.id}')" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button></div>`;
+                    c.innerHTML+=`<div class="col-md-6"><div class="card article-card h-100 p-4" onclick="window.openArticleDetail('${doc.id}')">${adminBtns}<h4 class="fw-bold mb-2">${d.title}</h4><small class="text-muted mb-3 d-block"><i class="bi bi-calendar3 me-2"></i>${date}</small><p class="text-muted small">${prev}</p><span class="text-primary fw-bold small">Baca Selengkapnya <i class="bi bi-arrow-right"></i></span></div></div>`;
+                });
+            });
+        }
 
-        // --- EXISTING BANNER & PACKAGE LOGIC ---
-        
-        document.getElementById('formAddBanner').addEventListener('submit', async (e) => {
+        // --- TEAM MANAGEMENT ---
+        document.getElementById('formAddTeam').addEventListener('submit', async(e)=>{
             e.preventDefault();
-            if (!isAdmin) return;
+            if(!isAdmin) return;
             try {
-                await addDoc(collection(db, "banners"), {
-                    img: document.getElementById('bannerImgUrl').value,
+                await addDoc(collection(db, "teams"), {
+                    name: document.getElementById('teamName').value,
+                    role: document.getElementById('teamRole').value,
+                    img: document.getElementById('teamImg').value,
                     createdAt: serverTimestamp()
                 });
-                document.getElementById('formAddBanner').reset();
-                showAlert('Sukses', 'Banner berhasil ditambahkan');
-            } catch (err) { showAlert('Error', err.message, 'error'); }
+                document.getElementById('formAddTeam').reset();
+                window.showAlert('Sukses', 'Tim ditambahkan!');
+            } catch(e) { window.showAlert('Error', e.message, 'error'); }
         });
 
-        function renderBanners() {
-            onSnapshot(query(collection(db, "banners"), orderBy("createdAt", "desc")), (snapshot) => {
-                const carouselItems = document.getElementById('carousel-items');
-                const adminList = document.getElementById('admin-banner-list');
-                carouselItems.innerHTML = "";
+        function renderTeams() {
+            onSnapshot(query(collection(db, "teams"), orderBy("createdAt", "asc")), (snapshot) => {
+                const userList = document.getElementById('team-list-user');
+                const adminList = document.getElementById('admin-team-list');
+                userList.innerHTML = "";
                 adminList.innerHTML = "";
-                if (snapshot.empty) {
-                    carouselItems.innerHTML = `<div class="carousel-item active"><img src="https://via.placeholder.com/1600x900?text=Goresan+Aksara+Publishing" class="d-block w-100"></div>`;
+
+                if(snapshot.empty) {
+                    userList.innerHTML = '<div class="col-12 text-center text-muted">Belum ada data tim.</div>';
                 } else {
-                    snapshot.docs.forEach((doc, index) => {
-                        const data = doc.data();
-                        const activeClass = index === 0 ? 'active' : '';
-                        carouselItems.innerHTML += `<div class="carousel-item ${activeClass}"><img src="${data.img}" class="d-block w-100" alt="Promo"></div>`;
-                        if (isAdmin) {
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        
+                        // User View
+                        userList.innerHTML += `
+                        <div class="col-6 col-md-3">
+                            <div class="team-card">
+                                <div class="team-img-wrapper">
+                                    <img src="${d.img}" class="team-img" alt="${d.name}">
+                                </div>
+                                <h5 class="team-name">${d.name}</h5>
+                                <p class="team-role">${d.role}</p>
+                            </div>
+                        </div>`;
+
+                        // Admin View
+                        if(isAdmin) {
                             adminList.innerHTML += `
-                                <div class="col-md-3 position-relative">
-                                    <img src="${data.img}" class="img-thumbnail" style="height:100px; width:100%; object-fit:cover;">
-                                    <button onclick="window.deleteBanner('${doc.id}')" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1">&times;</button>
-                                </div>`;
+                            <div class="col-md-4 position-relative border p-2 rounded bg-white">
+                                <div class="d-flex align-items-center">
+                                    <img src="${d.img}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:10px;">
+                                    <div>
+                                        <div class="fw-bold small">${d.name}</div>
+                                        <div class="text-muted small" style="font-size:0.75rem">${d.role}</div>
+                                    </div>
+                                </div>
+                                <button onclick="window.deleteTeam('${doc.id}')" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1" style="font-size:0.7rem;">&times;</button>
+                            </div>`;
                         }
                     });
                 }
             });
         }
-        window.deleteBanner = (id) => {
-            showConfirm("Hapus banner ini?", async () => { await deleteDoc(doc(db, "banners", id)); });
-        };
+        window.deleteTeam = (id) => window.showConfirm("Hapus anggota tim?", async () => await deleteDoc(doc(db, "teams", id)));
 
-        document.getElementById('formPackage').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!isAdmin) return;
-            const id = document.getElementById('editPackageId').value;
-            const data = {
-                name: document.getElementById('pkgName').value,
-                price: document.getElementById('pkgPrice').value,
-                badge: document.getElementById('pkgBadge').value,
-                img: document.getElementById('pkgImg').value,
-                features: document.getElementById('pkgFeatures').value.split(',').map(f => f.trim()),
-                updatedAt: serverTimestamp()
-            };
-            try {
-                if (id) { await updateDoc(doc(db, "packages", id), data); showAlert('Sukses', 'Paket berhasil diperbarui!'); } 
-                else { data.createdAt = serverTimestamp(); await addDoc(collection(db, "packages"), data); showAlert('Sukses', 'Paket berhasil ditambahkan!'); }
-                resetPackageForm();
-            } catch (err) { showAlert('Error', err.message, 'error'); }
-        });
-        window.editPackage = (id, name, price, badge, img, featuresStr) => {
-            document.getElementById('editPackageId').value = id;
-            document.getElementById('pkgName').value = name;
-            document.getElementById('pkgPrice').value = price;
-            document.getElementById('pkgBadge').value = badge === 'undefined' ? '' : badge;
-            document.getElementById('pkgImg').value = img;
-            document.getElementById('pkgFeatures').value = decodeURIComponent(featuresStr);
-            document.getElementById('btnSavePackage').innerHTML = '<i class="bi bi-check-lg"></i> Update Paket';
-            document.getElementById('btnCancelEdit').classList.remove('d-none');
-            document.getElementById('admin-package-panel').scrollIntoView({behavior: 'smooth'});
+
+        // --- SUBMISSION WIZARD ---
+        window.openWizardFree = () => {
+            if(!currentUser){ window.showAlert('Akses Ditolak', 'Login dulu ya!', 'error'); return; }
+            isFreeSubmission = true;
+            window.nextStep(2);
+            new bootstrap.Modal(document.getElementById('submissionModal')).show();
         };
-        document.getElementById('btnCancelEdit').addEventListener('click', resetPackageForm);
-        function resetPackageForm() {
-            document.getElementById('formPackage').reset();
-            document.getElementById('editPackageId').value = '';
-            document.getElementById('btnSavePackage').innerHTML = '<i class="bi bi-save"></i> Simpan Paket';
-            document.getElementById('btnCancelEdit').classList.add('d-none');
-        }
-        window.deletePackage = (id) => {
-            showConfirm("Yakin hapus paket ini?", async () => { try { await deleteDoc(doc(db, "packages", id)); } catch(e) { showAlert('Error', e.message, 'error'); } });
-        };
-        function renderPackages() {
-            const container = document.getElementById('packages-container');
-            onSnapshot(query(collection(db, "packages"), orderBy("createdAt", "desc")), (snapshot) => {
-                container.innerHTML = "";
-                if (snapshot.empty) { container.innerHTML = `<div class="text-center py-5 text-muted">Belum ada paket tersedia.</div>`; return; }
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const featuresStr = encodeURIComponent(data.features.join(', '));
-                    let featuresHtml = data.features.map(f => `<li><i class="bi bi-check-circle-fill"></i> ${f}</li>`).join('');
-                    let adminControls = "";
-                    if (isAdmin) {
-                        adminControls = `
-                        <div class="position-absolute top-0 start-0 m-2" style="z-index:99">
-                            <button onclick="window.editPackage('${doc.id}', '${data.name}', '${data.price}', '${data.badge}', '${data.img}', '${featuresStr}')" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i></button>
-                            <button onclick="window.deletePackage('${doc.id}')" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
-                        </div>`;
-                    }
-                    const dataJson = encodeURIComponent(JSON.stringify(data));
-                    const selectBtn = `<button onclick="window.openWizard('${dataJson}')" class="btn btn-outline-dark w-100 rounded-pill">Pilih Paket</button>`;
-                    const html = `
-                    <div class="col-md-6 col-lg-4">
-                        <div class="pricing-card h-100">
-                            ${adminControls}
-                            ${data.badge ? `<span class="position-absolute top-0 end-0 m-3 badge bg-gradient-main rounded-pill">${data.badge}</span>` : ''}
-                            <div style="height: 180px; overflow:hidden;">
-                                <img src="${data.img || 'https://via.placeholder.com/400x200'}" style="width:100%; height:100%; object-fit:cover;">
-                            </div>
-                            <div class="pricing-header text-center">
-                                <h3 class="gradient-text">${data.name}</h3>
-                                <div class="price-tag my-3">Rp ${parseInt(data.price).toLocaleString('id-ID')}</div>
-                            </div>
-                            <div class="card-body p-4">
-                                <ul class="list-unstyled feature-list mx-auto mb-4" style="max-width: 250px;">${featuresHtml}</ul>
-                                ${selectBtn}
-                            </div>
-                        </div>
-                    </div>`;
-                    container.innerHTML += html;
-                });
-            });
-        }
         window.openWizard = (dataStr) => {
-            if (!currentUser) { showAlert('Akses Ditolak', 'Silakan login terlebih dahulu.', 'error'); return; }
+            if(!currentUser){ window.showAlert('Akses Ditolak', 'Login dulu ya!', 'error'); return; }
+            isFreeSubmission = false;
             selectedPackageData = JSON.parse(decodeURIComponent(dataStr));
             document.getElementById('wizPkgName').innerText = selectedPackageData.name;
             document.getElementById('wizPkgPrice').innerText = `Rp ${parseInt(selectedPackageData.price).toLocaleString('id-ID')}`;
             document.getElementById('wizImg').src = selectedPackageData.img || 'https://via.placeholder.com/150';
-            document.getElementById('wizFeatures').innerHTML = selectedPackageData.features.map(f => `<li>${f}</li>`).join('');
-            window.nextStep(1); new bootstrap.Modal(document.getElementById('submissionModal')).show();
+            document.getElementById('wizFeatures').innerHTML = selectedPackageData.features.map(f=>`<li>${f}</li>`).join('');
+            window.nextStep(1);
+            new bootstrap.Modal(document.getElementById('submissionModal')).show();
         };
         window.nextStep = (step) => {
-            document.querySelectorAll('.wizard-step').forEach(el => el.classList.add('d-none'));
+            document.querySelectorAll('.wizard-step').forEach(el=>el.classList.add('d-none'));
             document.getElementById(`step${step}`).classList.remove('d-none');
-            if(step === 3) {
-                const title = document.getElementById('subJudul').value;
-                const name = document.getElementById('subNama').value;
-                const wa = document.getElementById('subWa').value;
-                if(!title || !name || !wa) { showAlert('Data Kurang', 'Mohon lengkapi data diri penulis.', 'error'); window.prevStep(2); }
-            }
+            const backBtn = document.getElementById('btnBackToStep1');
+            if(step===2) isFreeSubmission ? backBtn.classList.add('d-none') : backBtn.classList.remove('d-none');
         };
-        window.prevStep = (step) => { document.querySelectorAll('.wizard-step').forEach(el => el.classList.add('d-none')); document.getElementById(`step${step}`).classList.remove('d-none'); };
+        window.prevStep = (step) => {
+            document.querySelectorAll('.wizard-step').forEach(el=>el.classList.add('d-none'));
+            document.getElementById(`step${step}`).classList.remove('d-none');
+        };
         window.submitNaskah = async () => {
-            const check1 = document.getElementById('check1').checked;
-            const check2 = document.getElementById('check2').checked;
-            const check3 = document.getElementById('check3').checked;
-            if(!check1 || !check2 || !check3) { showAlert('Penting', 'Mohon setujui semua syarat dan ketentuan.', 'error'); return; }
+            if(!document.getElementById('check1').checked || !document.getElementById('check2').checked || !document.getElementById('check3').checked) { window.showAlert('Penting','Mohon setujui semua syarat.','error'); return; }
             const judul = document.getElementById('subJudul').value;
             const nama = document.getElementById('subNama').value;
             const wa = document.getElementById('subWa').value;
-            const pkgName = selectedPackageData.name;
-            const emailUser = currentUser.email;
+            const pkgName = isFreeSubmission ? "Terbit Gratis (Kurasi)" : selectedPackageData.name;
             try {
-                await addDoc(collection(db, "naskah_masuk"), { userEmail: emailUser, namaPenulis: nama, wa: wa, judul: judul, paket: pkgName, tanggal: serverTimestamp(), status: 'Baru' });
+                await addDoc(collection(db,"naskah_masuk"),{ userEmail: currentUser.email, namaPenulis: nama, wa: wa, judul: judul, paket: pkgName, tanggal: serverTimestamp(), status: 'Baru' });
                 const subject = encodeURIComponent(`Naskah Baru - ${judul} (${pkgName})`);
-                const body = encodeURIComponent(`Halo Admin Goresan Aksara,\n\nSaya ingin menerbitkan buku dengan rincian:\nNama: ${nama}\nJudul Naskah: ${judul}\nPaket: ${pkgName}\nNo WA: ${wa}\n\nBerikut saya lampirkan file naskah saya dalam email ini.\nMohon dicek. Terima kasih.`);
+                const body = encodeURIComponent(`Halo Admin,\n\nSaya ingin menerbitkan buku (${pkgName}).\nJudul: ${judul}\nNama: ${nama}\nWA: ${wa}\n\nLampiran naskah ada di email ini.`);
                 window.location.href = `mailto:goresanaksarapublishing@gmail.com?subject=${subject}&body=${body}`;
                 bootstrap.Modal.getInstance(document.getElementById('submissionModal')).hide();
-                showAlert('Berhasil', 'Data tersimpan! Silakan lampirkan file naskah di aplikasi email yang terbuka.', 'success');
-            } catch (e) { showAlert('Error', 'Gagal menyimpan data: ' + e.message, 'error'); }
+                window.showAlert('Berhasil', 'Silakan lampirkan file di email Anda.', 'success');
+            } catch(e) { window.showAlert('Error', e.message, 'error'); }
         };
+
+        // --- GLOBAL ADMIN ACTIONS ---
+        document.getElementById('formAddBanner').addEventListener('submit', async(e)=>{e.preventDefault();try{await addDoc(collection(db,"banners"),{img:document.getElementById('bannerImgUrl').value,createdAt:serverTimestamp()});document.getElementById('formAddBanner').reset();window.showAlert('Sukses','Banner ditambah');}catch(e){window.showAlert('Error',e.message,'error');}});
+        window.deleteBanner=(id)=>window.showConfirm("Hapus banner?",async()=>await deleteDoc(doc(db,"banners",id)));
+        
+        document.getElementById('formPackage').addEventListener('submit', async(e)=>{e.preventDefault();const id=document.getElementById('editPackageId').value;const d={name:document.getElementById('pkgName').value,price:document.getElementById('pkgPrice').value,badge:document.getElementById('pkgBadge').value,img:document.getElementById('pkgImg').value,features:document.getElementById('pkgFeatures').value.split(',').map(f=>f.trim()),updatedAt:serverTimestamp()};try{if(id)await updateDoc(doc(db,"packages",id),d);else{d.createdAt=serverTimestamp();await addDoc(collection(db,"packages"),d);}document.getElementById('formPackage').reset();document.getElementById('editPackageId').value='';document.getElementById('btnSavePackage').innerText='Simpan Paket';document.getElementById('btnCancelEdit').classList.add('d-none');window.showAlert('Sukses','Paket disimpan');}catch(e){window.showAlert('Error',e.message,'error');}});
+        window.editPackage=(id,n,p,b,i,f)=>{document.getElementById('editPackageId').value=id;document.getElementById('pkgName').value=n;document.getElementById('pkgPrice').value=p;document.getElementById('pkgBadge').value=b==='undefined'?'':b;document.getElementById('pkgImg').value=i;document.getElementById('pkgFeatures').value=decodeURIComponent(f);document.getElementById('btnSavePackage').innerText='Update';document.getElementById('btnCancelEdit').classList.remove('d-none');document.getElementById('admin-package-panel').scrollIntoView();}
+        document.getElementById('btnCancelEdit').addEventListener('click', ()=>{document.getElementById('formPackage').reset();document.getElementById('editPackageId').value='';document.getElementById('btnSavePackage').innerText='Simpan Paket';document.getElementById('btnCancelEdit').classList.add('d-none');});
+        window.deletePackage=(id)=>window.showConfirm("Hapus paket?",async()=>await deleteDoc(doc(db,"packages",id)));
+
+        window.loadRules = async () => {
+            const docSnap = await getDoc(doc(db, "settings", "terbit_gratis_rules"));
+            if (docSnap.exists()) { document.getElementById('rules-content').innerHTML = docSnap.data().content; if(isAdmin) quillRules.root.innerHTML = docSnap.data().content; }
+            else { document.getElementById('rules-content').innerHTML = '<p class="text-center">Belum ada aturan.</p>'; }
+        };
+        window.saveRules = async () => { try { await setDoc(doc(db,"settings","terbit_gratis_rules"),{ content: quillRules.root.innerHTML, updatedAt: serverTimestamp() }); window.showAlert('Sukses','Aturan disimpan'); loadRules(); } catch(e){ window.showAlert('Error',e.message,'error'); } };
+
+        window.openArticleDetail = async (id) => { if(event.target.tagName==='BUTTON'||event.target.tagName==='I')return; const d=await getDoc(doc(db,"articles",id)); if(d.exists()){ const data=d.data(); document.getElementById('article-list-view').classList.add('d-none'); document.getElementById('article-detail-view').classList.remove('d-none'); document.getElementById('detail-art-title').innerText=data.title; document.getElementById('detail-art-date').innerText=data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleDateString():''; document.getElementById('detail-art-content').innerHTML=data.content; }};
+        window.closeArticleDetail = () => { document.getElementById('article-list-view').classList.remove('d-none'); document.getElementById('article-detail-view').classList.add('d-none'); };
+        window.editArticle = async (id) => { const d=await getDoc(doc(db,"articles",id)); if(d.exists()){ const data=d.data(); document.getElementById('editArticleId').value=id; document.getElementById('articleTitle').value=data.title; quillArtikel.root.innerHTML=data.content; document.getElementById('btnCancelArt').classList.remove('d-none'); document.getElementById('admin-article-panel').scrollIntoView(); }};
+        window.deleteArticle = (id) => window.showConfirm('Hapus artikel?', async()=>await deleteDoc(doc(db,"articles",id)));
+        document.getElementById('btnCancelArt').addEventListener('click', ()=>{ document.getElementById('formArticle').reset(); quillArtikel.setText(''); document.getElementById('editArticleId').value=''; document.getElementById('btnCancelArt').classList.add('d-none'); });
+
+        window.openStatusModal=()=>{ if(!currentUser)return; new bootstrap.Modal(document.getElementById('statusModal')).show(); const q=query(collection(db,"naskah_masuk"),where("userEmail","==",currentUser.email)); onSnapshot(q,(s)=>{ const b=document.getElementById('user-status-body'); b.innerHTML=""; if(s.empty) document.getElementById('status-empty-msg').classList.remove('d-none'); else { document.getElementById('status-empty-msg').classList.add('d-none'); let docs=[]; s.forEach(d=>docs.push(d.data())); docs.sort((a,b)=>(b.tanggal?b.tanggal.seconds:0)-(a.tanggal?a.tanggal.seconds:0)); docs.forEach(d=>{ let bc='bg-secondary'; if(d.status==='Baru')bc='status-baru'; else if(d.status==='Diproses')bc='status-diproses'; else if(d.status==='Diterima')bc='status-diterima'; else if(d.status==='Ditolak')bc='status-ditolak'; else if(d.status==='Selesai')bc='status-selesai'; b.innerHTML+=`<tr><td class="ps-4 text-muted small">${d.tanggal?new Date(d.tanggal.seconds*1000).toLocaleDateString():'-'}</td><td class="fw-bold">${d.judul}</td><td>${d.paket}</td><td class="pe-4 text-end"><span class="badge ${bc} rounded-pill px-3">${d.status}</span></td></tr>`; }); } }); };
+        
+        // ADMIN ARCHIVE
+        window.updateNaskahStatus=async(id,st)=>{try{await updateDoc(doc(db,"naskah_masuk",id),{status:st});}catch(e){window.showAlert('Error',e.message,'error');}}
+        function loadArchive(){onSnapshot(query(collection(db,"naskah_masuk"),orderBy("tanggal","desc")),(s)=>{const b=document.getElementById('archive-table-body');b.innerHTML="";if(s.empty){b.innerHTML='<tr><td colspan="6" class="text-muted">Kosong</td></tr>';return;}s.forEach(d=>{const da=d.data();const opts=['Baru','Diproses','Diterima','Ditolak','Selesai'].map(o=>`<option value="${o}" ${da.status===o?'selected':''}>${o}</option>`).join('');b.innerHTML+=`<tr><td>${da.tanggal?new Date(da.tanggal.seconds*1000).toLocaleDateString():'-'}</td><td>${da.namaPenulis}</td><td>${da.judul}</td><td><span class="badge bg-light text-dark border">${da.paket}</span></td><td><a href="https://wa.me/${da.wa}" target="_blank" class="btn btn-sm btn-success"><i class="bi bi-whatsapp"></i></a> <a href="mailto:${da.userEmail}" class="btn btn-sm btn-secondary"><i class="bi bi-envelope"></i></a></td><td style="width:150px"><select class="form-select form-select-sm" onchange="window.updateNaskahStatus('${d.id}',this.value)">${opts}</select></td></tr>`;});});}
 
     </script>
 </body>
