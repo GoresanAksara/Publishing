@@ -228,6 +228,19 @@
         .status-ditolak { background-color: #e74c3c; color: white; }
         .status-selesai { background-color: #9b59b6; color: white; }
 
+        /* --- AI STYLES (NEW) --- */
+        .ai-indicator {
+            background: #e3f2fd; border: 1px solid #90caf9; padding: 15px;
+            border-radius: 10px; font-size: 0.9rem; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 15px; color: #0d47a1;
+        }
+        .ai-badge {
+            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+            color: white; padding: 3px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700; display: inline-block; margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -245,7 +258,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('home')">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('artikel')">Keunggulan</a></li>
+                    <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('artikel')">Edukasi & Artikel</a></li>
                     <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('terbit-gratis')">Terbit Gratis</a></li>
                     <li class="nav-item"><a class="nav-link nav-closer" href="#" onclick="showSection('layanan')">Paket Berbayar</a></li>
                     
@@ -322,7 +335,7 @@
                     <div class="col-6 col-md-3">
                         <a href="#" onclick="showSection('artikel')" class="quick-menu-btn">
                             <i class="bi bi-newspaper"></i>
-                            <span>Artikel</span>
+                            <span>Artikel & Tips</span>
                         </a>
                     </div>
                     <div class="col-6 col-md-3">
@@ -412,9 +425,13 @@
             </button>
         </div>
         <div class="container">
+            <!-- AI STATUS AREA (ADDED) -->
+            <div id="ai-status-area"></div>
+
             <div class="text-center mb-5">
                 <h6 class="fw-bold text-uppercase" style="color: var(--mustard-pastel);">Informasi & Edukasi</h6>
-                <h2 class="fw-bold gradient-text">Artikel Keunggulan</h2>
+                <h2 class="fw-bold gradient-text">Pojok Literasi & Artikel</h2>
+                <p class="text-muted">Temukan tips menulis, novel, cerpen, dan panduan penerbitan setiap hari.</p>
             </div>
 
             <!-- ADMIN ARTICLE EDITOR -->
@@ -446,6 +463,8 @@
             <div id="article-detail-view" class="d-none">
                 <button onclick="closeArticleDetail()" class="btn btn-outline-secondary rounded-pill mb-4"><i class="bi bi-arrow-left"></i> Kembali ke Daftar</button>
                 <div class="card border-0 shadow-sm p-4">
+                    <!-- AI Badge Slot -->
+                    <div id="detail-ai-badge"></div>
                     <h1 id="detail-art-title" class="fw-bold mb-3 gradient-text"></h1>
                     <div class="text-muted small mb-4" id="detail-art-date"></div>
                     <div id="detail-art-content" class="article-content"></div>
@@ -785,6 +804,9 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         
+        // --- ADDED: API KEY FOR AKSA AI ---
+        const apiKey = "AIzaSyAMSGCeBznXRwfby57JiB3RjQidWrOOqAU"; // Akan diisi otomatis oleh environment
+
         // GLOBAL VARS
         let currentUser = null;
         let isAdmin = false;
@@ -824,6 +846,84 @@
             if (bsCollapse) bsCollapse.hide();
             if (sectionId === 'terbit-gratis') loadRules();
         };
+
+        // --- ADDED: AKSA AI AUTO PUBLISH FUNCTION ---
+        async function checkAndTriggerAIPublishing() {
+            const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+            const now = new Date();
+            // Jalankan hanya setelah jam 9 pagi
+            if (now.getHours() < 9) return;
+
+            // Cek log AI di Firestore untuk memastikan hanya terbit sekali sehari
+            const aiLogRef = doc(db, "system_logs", "daily_ai_article");
+            try {
+                const logSnap = await getDoc(aiLogRef);
+                if (logSnap.exists() && logSnap.data().lastPublished === today) return; // Sudah terbit hari ini
+
+                // Update UI Indikator
+                const indicatorArea = document.getElementById('ai-status-area');
+                if(indicatorArea) {
+                    indicatorArea.innerHTML = `
+                        <div class="ai-indicator">
+                            <div class="spinner-grow spinner-grow-sm text-primary" role="status"></div>
+                            <span><strong>Aksa AI</strong> sedang menulis materi baru tentang kepenulisan untuk hari ini...</span>
+                        </div>
+                    `;
+                }
+
+                // Topik Acak untuk Variasi
+                const topics = [
+                    "Teknik Dasar Menulis Novel yang Memikat",
+                    "Cara Mengembangkan Karakter Cerpen yang Hidup",
+                    "Panduan Lengkap Menerbitkan Buku Sendiri (Self Publishing)",
+                    "Tips Mengatasi Writer's Block untuk Penulis Pemula",
+                    "Rahasia Membuat Plot Twist yang Tidak Terduga",
+                    "Cara Mengirim Naskah ke Penerbit Mayor",
+                    "Pentingnya Editing Naskah Sebelum Terbit"
+                ];
+                const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+
+                const prompt = `Buatlah satu artikel edukatif dan inspiratif tentang: "${randomTopic}". 
+                Target pembaca adalah penulis pemula di Indonesia. 
+                Gunakan format HTML sederhana (gunakan tag <p>, <ul>, <li>, <strong>, <h3>). 
+                Jangan gunakan Markdown atau simbol pagar (#). 
+                Baris pertama harus Judul Artikel (tanpa tag HTML). 
+                Penulis artikel ini adalah 'Aksa AI'.`;
+
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await res.json();
+                const fullText = data.candidates[0].content.parts[0].text;
+                
+                // Pisahkan Judul dan Isi
+                const lines = fullText.split('\n');
+                const title = lines[0].replace(/<[^>]*>/g, '').trim(); // Bersihkan tag jika ada di judul
+                const content = lines.slice(1).join('\n');
+
+                // Simpan ke Firestore
+                await addDoc(collection(db, "articles"), {
+                    title: title,
+                    content: content,
+                    type: 'ai', // Penanda khusus artikel AI
+                    createdAt: serverTimestamp(),
+                    author: 'Aksa AI'
+                });
+
+                // Update Log Harian
+                await setDoc(aiLogRef, { lastPublished: today });
+                
+                if(indicatorArea) indicatorArea.innerHTML = ''; // Hapus indikator
+                
+            } catch (err) { 
+                console.error("AI Publisher Error:", err); 
+                const indicatorArea = document.getElementById('ai-status-area');
+                if(indicatorArea) indicatorArea.innerHTML = '';
+            }
+        }
 
         // AUTH & UI STATE LISTENER
         onAuthStateChanged(auth, (user) => {
@@ -901,6 +1001,9 @@
             renderBanners();
             renderArticles();
             renderTeams();
+            
+            // --- ADDED: CALL AI CHECK ON LOAD ---
+            checkAndTriggerAIPublishing();
         });
 
         // --- AUTH FORMS ---
@@ -967,6 +1070,7 @@
             });
         }
 
+        // --- UPDATED: RENDER ARTICLES WITH AI BADGE SUPPORT ---
         function renderArticles() {
             onSnapshot(query(collection(db,"articles"),orderBy("createdAt","desc")),(s)=>{
                 const c=document.getElementById('article-list-view'); c.innerHTML="";
@@ -976,7 +1080,14 @@
                     const prev=d.content.replace(/<[^>]*>?/gm, '').substring(0,100)+'...';
                     const date=d.createdAt?new Date(d.createdAt.seconds*1000).toLocaleDateString('id-ID'):'';
                     let adminBtns=''; if(isAdmin) adminBtns=`<div class="position-absolute top-0 end-0 m-3"><button onclick="window.editArticle('${doc.id}')" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button><button onclick="window.deleteArticle('${doc.id}')" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button></div>`;
-                    c.innerHTML+=`<div class="col-md-6"><div class="card article-card h-100 p-4" onclick="window.openArticleDetail('${doc.id}')">${adminBtns}<h4 class="fw-bold mb-2">${d.title}</h4><small class="text-muted mb-3 d-block"><i class="bi bi-calendar3 me-2"></i>${date}</small><p class="text-muted small">${prev}</p><span class="text-primary fw-bold small">Baca Selengkapnya <i class="bi bi-arrow-right"></i></span></div></div>`;
+                    
+                    // Cek tipe AI
+                    let aiBadge = '';
+                    if(d.type === 'ai') {
+                        aiBadge = '<span class="ai-badge"><i class="bi bi-robot"></i> Aksa AI Tips</span><br>';
+                    }
+
+                    c.innerHTML+=`<div class="col-md-6"><div class="card article-card h-100 p-4" onclick="window.openArticleDetail('${doc.id}')">${adminBtns}${aiBadge}<h4 class="fw-bold mb-2">${d.title}</h4><small class="text-muted mb-3 d-block"><i class="bi bi-calendar3 me-2"></i>${date}</small><p class="text-muted small">${prev}</p><span class="text-primary fw-bold small">Baca Selengkapnya <i class="bi bi-arrow-right"></i></span></div></div>`;
                 });
             });
         }
@@ -1103,7 +1214,26 @@
         };
         window.saveRules = async () => { try { await setDoc(doc(db,"settings","terbit_gratis_rules"),{ content: quillRules.root.innerHTML, updatedAt: serverTimestamp() }); window.showAlert('Sukses','Aturan disimpan'); loadRules(); } catch(e){ window.showAlert('Error',e.message,'error'); } };
 
-        window.openArticleDetail = async (id) => { if(event.target.tagName==='BUTTON'||event.target.tagName==='I')return; const d=await getDoc(doc(db,"articles",id)); if(d.exists()){ const data=d.data(); document.getElementById('article-list-view').classList.add('d-none'); document.getElementById('article-detail-view').classList.remove('d-none'); document.getElementById('detail-art-title').innerText=data.title; document.getElementById('detail-art-date').innerText=data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleDateString():''; document.getElementById('detail-art-content').innerHTML=data.content; }};
+        window.openArticleDetail = async (id) => { 
+            if(event.target.tagName==='BUTTON'||event.target.tagName==='I')return; 
+            const d=await getDoc(doc(db,"articles",id)); 
+            if(d.exists()){ 
+                const data=d.data(); 
+                document.getElementById('article-list-view').classList.add('d-none'); 
+                document.getElementById('article-detail-view').classList.remove('d-none'); 
+                
+                // Show AI Badge if needed
+                if(data.type === 'ai') {
+                    document.getElementById('detail-ai-badge').innerHTML = '<span class="ai-badge"><i class="bi bi-robot"></i> Aksa AI Tips</span>';
+                } else {
+                    document.getElementById('detail-ai-badge').innerHTML = '';
+                }
+
+                document.getElementById('detail-art-title').innerText=data.title; 
+                document.getElementById('detail-art-date').innerText=data.createdAt?new Date(data.createdAt.seconds*1000).toLocaleDateString():''; 
+                document.getElementById('detail-art-content').innerHTML=data.content; 
+            }
+        };
         window.closeArticleDetail = () => { document.getElementById('article-list-view').classList.remove('d-none'); document.getElementById('article-detail-view').classList.add('d-none'); };
         window.editArticle = async (id) => { const d=await getDoc(doc(db,"articles",id)); if(d.exists()){ const data=d.data(); document.getElementById('editArticleId').value=id; document.getElementById('articleTitle').value=data.title; quillArtikel.root.innerHTML=data.content; document.getElementById('btnCancelArt').classList.remove('d-none'); document.getElementById('admin-article-panel').scrollIntoView(); }};
         window.deleteArticle = (id) => window.showConfirm('Hapus artikel?', async()=>await deleteDoc(doc(db,"articles",id)));
